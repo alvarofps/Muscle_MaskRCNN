@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 from  matplotlib.image import imread
 from skimage.color import rgb2gray
 from skimage.color import rgb2grey
+from numpy import zeros
+import numpy as np
+import cv2
 
 
 
@@ -57,12 +60,21 @@ def draw_mask_over_image(image_path, label_path):
     for point in mask_points:
         x.append(point[0])
         y.append(point[1])
-
+    h, w = one_channel_image.shape
+    # Get logic on this down, I think it has something to do with the amount of rows and cols
+    # bless up
+    background = zeros((h, w))
+    print(f'The height is {h} and wdith is {w}')
     print(len(mask_points))
-    plt.imshow(image)
-    plt.fill(x, y, facecolor='white', edgecolor='white')
-    plt.show()
-
+    # plt.imshow(background)
+    # plt.fill(x, y, facecolor='gray', edgecolor='gray')
+    # plt.show()
+    # cv2.imshow('pull_up', background)
+    check_int = np.array([mask_points])
+    print(check_int.dtype)
+    mask = cv2.fillPoly(background, np.int32([mask_points]), color=(255))
+    cv2.imshow('mask', mask)
+    cv2.waitKey(0)
 
 def to_grayscale_segmentation():
     pass
