@@ -46,6 +46,13 @@ def remove_key(d, key):
     return r
 
 def draw_mask_over_image(image_path, label_path):
+    """
+    Selects a random image and applies the mask based on
+    its json label
+    :param image_path: Folder where the images are
+    :param label_path: Folder where the labels are
+    :return:
+    """
     random_image = choice(listdir(image_path))
     random_image_file = join(image_path, random_image)
     image = imread(random_image_file)
@@ -99,7 +106,15 @@ def draw_mask_over_image(image_path, label_path):
     cv2.imwrite(one_channel_images_path, one_ch_norm)
     cv2.imwrite(mask_path, mask)
 
+
 def to_grayscale_segmentation(image_path, label_path):
+    """
+    Creates the semantic segmentation ground truth files of the images,
+    These have _mask appended to the name file
+    :param image_path: Folder where the images are
+    :param label_path: Folder where the labels are
+    :return:
+    """
     for image_file in listdir(image_path):
         random_image_file = join(image_path, image_file)
         image = imread(random_image_file)
@@ -124,7 +139,14 @@ def to_grayscale_segmentation(image_path, label_path):
         mask_path = join(image_path.replace('images/',"") + 'sem_seg/', mask_name)
         cv2.imwrite(mask_path, mask)
 
+
 def create_one_channel_images(image_path):
+    """
+    Extract only one channel of the image
+    New files are appended with one_channel_png
+    :param image_path: Folder where the images live
+    :return:
+    """
     for image_file in listdir(image_path):
         random_image_file = join(image_path, image_file)
         image = imread(random_image_file)
