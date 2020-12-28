@@ -13,6 +13,7 @@ from skimage.color import rgb2grey
 from numpy import zeros
 import numpy as np
 import cv2
+from skimage import io
 from skimage import img_as_ubyte
 
 
@@ -132,12 +133,13 @@ def to_grayscale_segmentation(image_path, label_path):
         h, w = one_channel_image.shape
         background = zeros((h, w))
         # Then we apply the mask with color 255, is white?
-        mask = cv2.fillPoly(background, np.int32([mask_points]), color=255)
+        mask = cv2.fillPoly(background, np.int32([mask_points]), color=1)
         just_name = image_file.split('.')[0]
         extension = image_file.split('.')[1]
         mask_name = just_name + '_mask.' + extension
-        mask_path = join(image_path.replace('images/',"") + 'sem_seg/', mask_name)
+        mask_path = join(image_path.replace('images/',"") + 'new_sem_seg/', mask_name)
         cv2.imwrite(mask_path, mask)
+
 
 
 def create_one_channel_images(image_path):
@@ -161,7 +163,31 @@ def create_one_channel_images(image_path):
         one_channel_images_path = join(image_path.replace('images/',"") + 'one_channel', one_channel_name)
         cv2.imwrite(one_channel_images_path, one_ch_norm)
 
+def register_dataset(images_path, sem_seg_files):
+    """
+    Register the dataset
+    :param images_path:
+    :param sem_seg_files:
+    :return:
+    """
+
+def generate_mask_for_data_augmentation_files(path, operations):
+    for file in listdir(path):
+        image = imread(join(path, file))
+        file_name = file.split('.')[0]
+        file_extension = file.split('.')[1]
+
+        for operation in operations:
+            op_substring = '_' + operation + '_mask.'
+            operation_name = file_name.replace('_mask', op_substring)
+            mask_name = operation_name + file_extension
+            mask_path = join(path, mask_name)
+            io.imsave(mask_path, image)
+            # print(mask_path)
+
+
 
 # draw_mask_over_image("/home/alvaro/Documents/MaskForMuscle/Cropped/", "/home/alvaro/Documents/MaskForMuscle/Cropped/labels/")
-to_grayscale_segmentation("/home/alvaro/Documents/MaskForMuscle/Cropped/images/", "/home/alvaro/Documents/MaskForMuscle/Cropped/labels/")
+# to_grayscale_segmentation("/home/alvaro/Documents/MaskForMuscle/Cropped/images/", "/home/alvaro/Documents/MaskForMuscle/Cropped/labels/")
 #create_one_channel_images("/home/alvaro/Documents/MaskForMuscle/Cropped/images/")
+generate_mask_for_data_augmentation_files('/home/alvaro/Documents/MaskForMuscle/Cropped/new_sem_seg/', ['hist', 'sharp', 'adap'])
